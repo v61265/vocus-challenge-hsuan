@@ -1,7 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
 
-import { defaultSansSerifFontFamily } from './shared-style';
-
 export const GlobalStyles = createGlobalStyle`
 /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
 
@@ -17,7 +15,8 @@ export const GlobalStyles = createGlobalStyle`
 
  //default font family  
  html {
-  ${defaultSansSerifFontFamily};
+  font-family: arial,"Microsoft JhengHei","微軟正黑體",sans-serif;
+
   line-height: 1.5; /* 2 */
   -webkit-text-size-adjust: 100%; /* 2 */
 }

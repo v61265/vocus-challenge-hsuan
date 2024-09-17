@@ -1,16 +1,14 @@
 import Head from 'next/head';
-// import localFont from 'next/font/local';
+import { styled } from 'styled-components';
+import ArticleCard from '~/components/article-card';
 
-// const geistSans = localFont({
-//   src: './fonts/GeistVF.woff',
-//   variable: '--font-geist-sans',
-//   weight: '100 900',
-// });
-// const geistMono = localFont({
-//   src: './fonts/GeistMonoVF.woff',
-//   variable: '--font-geist-mono',
-//   weight: '100 900',
-// });
+const ArticleList = styled.ul`
+  padding: 28px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: var(--Gray7, #f9f7f5);
+`;
 
 export default function Home() {
   return (
@@ -21,7 +19,11 @@ export default function Home() {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link rel='icon' href='https://vocus.cc/static/favicon.ico' />
       </Head>
-      <div>index</div>
+      <main>
+        <ArticleList>
+          <ArticleCard />
+        </ArticleList>
+      </main>
     </>
   );
 }
