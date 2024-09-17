@@ -1,6 +1,16 @@
 import Head from 'next/head';
 import { styled } from 'styled-components';
 import ArticleCard from '~/components/article-card';
+import { API_ENDPOINT } from '~/config';
+import { Article, ArticleData } from '~/types/article';
+
+const Main = styled.main`
+  background: var(--Gray7, #f9f7f5);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 const ArticleList = styled.ul`
   padding: 28px 20px;
@@ -8,9 +18,14 @@ const ArticleList = styled.ul`
   flex-direction: column;
   gap: 4px;
   background: var(--Gray7, #f9f7f5);
+  width: fit-content;
 `;
 
-export default function Home() {
+type HomeProps = {
+  articles: Article[];
+};
+
+export default function Home({ articles }: HomeProps) {
   return (
     <>
       <Head>
@@ -19,11 +34,41 @@ export default function Home() {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link rel='icon' href='https://vocus.cc/static/favicon.ico' />
       </Head>
-      <main>
+      <Main>
         <ArticleList>
-          <ArticleCard />
+          {articles.map((article) => {
+            return <ArticleCard key={article._id} article={article} />;
+          })}
         </ArticleList>
-      </main>
+      </Main>
     </>
   );
+}
+
+/**
+ * @type {import('next').GetServerSideProps}
+ */
+export async function getServerSideProps() {
+  // res.setHeader('Cache-Control', `public, max-age=600`);
+  let articles: Article[] = [];
+  function getRandomArticles(data: ArticleData, count: number = 4): Article[] {
+    const { articles } = data;
+    const shuffledArticles = articles.sort(() => 0.5 - Math.random());
+    return shuffledArticles.slice(0, count);
+  }
+
+  try {
+    const dataResponse: ArticleData = await fetch(
+      `${API_ENDPOINT}/api/articles?userId=601aa114fd89780001d24d4d`
+    ).then((response) => response.json() as Promise<ArticleData>);
+    articles = getRandomArticles(dataResponse);
+  } catch (error) {
+    console.log('error when fetch post', error);
+  }
+
+  const props = {
+    articles,
+  };
+
+  return { props };
 }

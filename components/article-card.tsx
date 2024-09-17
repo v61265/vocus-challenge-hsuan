@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 import Link from 'next/link';
+import { Article } from '~/types/article';
+import Image from 'next/image';
 
 const CardWrapper = styled.li`
   display: block;
@@ -17,7 +19,7 @@ const CardTop = styled.div`
   gap: 29px;
 `;
 
-const TitleAndDesc = styled.div``;
+const TitleAndAbstract = styled.div``;
 
 const Title = styled.h2`
   color: var(--Secondary-Dark, #222);
@@ -31,7 +33,7 @@ const Title = styled.h2`
   text-overflow: ellipsis;
 `;
 
-const Description = styled.p`
+const Abstract = styled.p`
   color: var(--Gray2, #665e5c);
   font-size: 14px;
   line-height: 20.5px;
@@ -42,11 +44,13 @@ const Description = styled.p`
   text-overflow: ellipsis;
 `;
 
-const Thumb = styled.figure`
-  width: 100px;
+const Thumb = styled.div`
+  position: relative !important;
+  min-width: 100px;
   height: 52.5px;
   border-radius: 3px;
   overflow: hidden;
+  margin: 0;
 `;
 
 const CardBottom = styled.div`
@@ -56,14 +60,13 @@ const CardBottom = styled.div`
 const Author = styled.div`
   display: flex;
   gap: 7px;
+  align-items: center;
 `;
 
-const Avatar = styled.figure`
+const Avatar = styled.div`
+  position: relative;
   width: 30px;
   height: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   flex-shrink: 0;
   overflow: hidden;
   border-radius: 50%;
@@ -76,22 +79,38 @@ const AuthorName = styled.span`
   line-height: 13px;
 `;
 
-export default function ArticleCard() {
+type ArticleCardProps = {
+  article: Article;
+};
+
+export default function ArticleCard({ article }: ArticleCardProps) {
   return (
     <CardWrapper>
       <CardTop>
-        <TitleAndDesc>
-          <Title>誰適合使用 iPhone SE 2020 ？適合買iPhone SE2 族群...</Title>
-          <Description>
-            我是一個普通的使用者，首次使用IOS系統，分享這五個月的使用心得，還有SE2的優點及缺點...
-          </Description>
-        </TitleAndDesc>
-        <Thumb></Thumb>
+        <TitleAndAbstract>
+          <Title>{article.title}</Title>
+          <Abstract>{article.abstract}</Abstract>
+        </TitleAndAbstract>
+        <Thumb>
+          <Image
+            src={article.thumbnailUrl}
+            alt={article.thumbnailUrl}
+            style={{ objectFit: 'cover', position: 'absolute' }}
+            fill
+          />
+        </Thumb>
       </CardTop>
       <CardBottom>
         <Author>
-          <Avatar></Avatar>
-          <AuthorName>舒國治</AuthorName>
+          {/* <Avatar>
+            <Image
+              src={article.user.avatarUrl}
+              alt={article.user.fullname}
+              style={{ objectFit: 'cover' }}
+              fill
+            />
+          </Avatar> */}
+          <AuthorName>{article.user.fullname}</AuthorName>
         </Author>
       </CardBottom>
     </CardWrapper>
