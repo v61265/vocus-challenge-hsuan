@@ -19,6 +19,15 @@ const ArticleList = styled.ul`
   gap: 4px;
   background: var(--Gray7, #f9f7f5);
   width: fit-content;
+  ${({ theme }) => theme.breakpoint.md} {
+    margin-top: 70px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: auto;
+    padding: 0;
+    gap: 21px 25px;
+    height: fit-content;
+  }
 `;
 
 type HomeProps = {
