@@ -8,8 +8,8 @@ const Main = styled.main`
   background: var(--Gray7, #f9f7f5);
   margin: 0;
   display: flex;
-  align-items: center;
   justify-content: center;
+  min-height: 100dvh;
 `;
 
 const ArticleList = styled.ul`

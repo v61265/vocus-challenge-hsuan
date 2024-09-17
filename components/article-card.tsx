@@ -55,6 +55,7 @@ const Thumb = styled.div`
 
 const CardBottom = styled.div`
   display: flex;
+  margin-top: 20px;
 `;
 
 const Author = styled.div`
@@ -95,21 +96,21 @@ export default function ArticleCard({ article }: ArticleCardProps) {
           <Image
             src={article.thumbnailUrl}
             alt={article.thumbnailUrl}
-            style={{ objectFit: 'cover', position: 'absolute' }}
+            style={{ objectFit: 'cover' }}
             fill
           />
         </Thumb>
       </CardTop>
       <CardBottom>
         <Author>
-          {/* <Avatar>
+          <Avatar>
             <Image
               src={article.user.avatarUrl}
               alt={article.user.fullname}
               style={{ objectFit: 'cover' }}
               fill
             />
-          </Avatar> */}
+          </Avatar>
           <AuthorName>{article.user.fullname}</AuthorName>
         </Author>
       </CardBottom>
