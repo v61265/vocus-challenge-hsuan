@@ -59,6 +59,12 @@ export default function LikeAndMark({
   articleId,
 }: LikeAndMarkProps) {
   const [isLiked, setIsLiked] = useState(false);
+
+  const setCookie = (name: string, value: string, maxAgeInDays: number) => {
+    const maxAge = maxAgeInDays * 24 * 60 * 60;
+    document.cookie = `${name}=${value}; max-age=${maxAge}; path=/`;
+  };
+
   useEffect(() => {
     const cookies = document.cookie.split('; ');
     const cookie = cookies.find((cookie: string) =>
@@ -90,7 +96,8 @@ export default function LikeAndMark({
           likedIdsValue.splice(index, 1);
         }
       }
-      document.cookie = `likedIds=${likedIdsValue.join(',')}; path=/;`;
+
+      setCookie('likedIds', likedIdsValue.join(','), 7);
 
       return newLikedState;
     });
