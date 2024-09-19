@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import Link from 'next/link';
 import { Article } from '~/types/article';
 import Image from 'next/image';
+import LikeAndMark from './like-and-mark';
 
 const CardWrapper = styled.li`
   display: block;
@@ -80,6 +81,8 @@ const Thumb = styled.div`
 const CardBottom = styled.div`
   display: flex;
   margin-top: 20px;
+  align-items: flex-end;
+  justify-content: space-between;
 `;
 
 const Author = styled.div`
@@ -109,17 +112,27 @@ type ArticleCardProps = {
 };
 
 export default function ArticleCard({ article }: ArticleCardProps) {
+  const {
+    likeCount = 0,
+    title = '',
+    abstract = '',
+    thumbnailUrl = 'https://images.vocus.cc/static/og_img/vocus_kv.jpeg',
+    user: {
+      avatarUrl = 'https://images.vocus.cc/static/og_img/vocus_kv.jpeg',
+      fullname = '',
+    },
+  } = article;
   return (
     <CardWrapper>
       <CardTop>
         <TitleAndAbstract>
-          <Title>{article.title}</Title>
-          <Abstract>{article.abstract}</Abstract>
+          <Title>{title}</Title>
+          <Abstract>{abstract}</Abstract>
         </TitleAndAbstract>
         <Thumb>
           <Image
-            src={article.thumbnailUrl}
-            alt={article.thumbnailUrl}
+            src={thumbnailUrl}
+            alt={thumbnailUrl}
             style={{ objectFit: 'cover' }}
             fill
             sizes='110px'
@@ -130,15 +143,16 @@ export default function ArticleCard({ article }: ArticleCardProps) {
         <Author>
           <Avatar>
             <Image
-              src={article.user.avatarUrl}
-              alt={article.user.fullname}
+              src={avatarUrl}
+              alt={fullname}
               style={{ objectFit: 'cover' }}
               fill
               sizes='30px'
             />
           </Avatar>
-          <AuthorName>{article.user.fullname}</AuthorName>
+          <AuthorName>{fullname}</AuthorName>
         </Author>
+        <LikeAndMark likeCount={likeCount} />
       </CardBottom>
     </CardWrapper>
   );
