@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import Link from 'next/link';
 import { Article } from '~/types/article';
 import Image from 'next/image';
 import LikeAndMark from './like-and-mark';
@@ -46,6 +45,11 @@ const Title = styled.h2`
     font-weight: 700;
     line-height: 27px;
   }
+
+  &:hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }
 `;
 
 const Abstract = styled.p`
@@ -89,6 +93,10 @@ const Author = styled.div`
   display: flex;
   gap: 7px;
   align-items: center;
+  &:hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }
 `;
 
 const Avatar = styled.div`
@@ -121,6 +129,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
       avatarUrl = 'https://images.vocus.cc/static/og_img/vocus_kv.jpeg',
       fullname = '',
     },
+    _id = '',
   } = article;
   return (
     <CardWrapper>
@@ -152,7 +161,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
           </Avatar>
           <AuthorName>{fullname}</AuthorName>
         </Author>
-        <LikeAndMark likeCount={likeCount} />
+        <LikeAndMark likeCount={likeCount} articleId={_id} />
       </CardBottom>
     </CardWrapper>
   );
