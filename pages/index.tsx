@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import { useState } from 'react';
 import { styled } from 'styled-components';
 import ArticleCard from '~/components/article-card';
 import { API_ENDPOINT } from '~/config';
@@ -8,25 +9,45 @@ const Main = styled.main`
   background: var(--Gray7, #f9f7f5);
   margin: 0;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   min-height: 100dvh;
 `;
 
 const ArticleList = styled.ul`
   padding: 28px 20px;
   display: flex;
-  flex-direction: column;
   gap: 4px;
   background: var(--Gray7, #f9f7f5);
   width: fit-content;
+  flex-direction: column;
   ${({ theme }) => theme.breakpoint.md} {
     margin-top: 70px;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    width: auto;
     padding: 0;
     gap: 21px 25px;
-    height: fit-content;
+    max-width: 907px;
+  }
+`;
+
+const BtnWrapper = styled.div`
+  margin-top: 40px;
+  width: fit-content;
+  text-align: center;
+`;
+
+const MarkFilterBtn = styled.button`
+  border: 1px solid var(--Secondary-Dark, #222222);
+  color: var(--Secondary-Dark, #222222);
+  padding: 8px;
+  border-radius: 2px;
+  &:hover {
+    cursor: pointer;
+    background: #f9f7f5;
+  }
+  &:focus {
+    outline: none !important;
   }
 `;
 
@@ -36,6 +57,32 @@ type HomeProps = {
 
 export default function Home({ articles }: HomeProps) {
   const firstArticle = articles?.[0] ?? {};
+  const [renderedArticles, setRenderedArticles] = useState<Article[]>(
+    articles.slice(0, 4)
+  );
+  const [isOnlyShowMarked, setIsOnlyShowMarked] = useState<boolean>(false);
+
+  const handleClickFilterArticle = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const cookies = document.cookie.split('; ');
+    const markCookie = cookies.find((cookie: string) =>
+      cookie.startsWith('markedIds=')
+    );
+    if (isOnlyShowMarked) {
+      setIsOnlyShowMarked(false);
+      return setRenderedArticles(articles.slice(0, 4));
+    }
+    if (!markCookie) {
+      alert('您還沒有收藏任何文章');
+    } else {
+      const markedIds = markCookie.split('=')[1].split(',');
+      setRenderedArticles(() =>
+        articles.filter((article) => markedIds.includes(article._id))
+      );
+    }
+    setIsOnlyShowMarked(true);
+  };
+
   return (
     <>
       <Head>
@@ -78,11 +125,16 @@ export default function Home({ articles }: HomeProps) {
         />
       </Head>
       <Main>
+        <BtnWrapper>
+          <MarkFilterBtn onClick={handleClickFilterArticle}>
+            僅顯示我收藏文章
+          </MarkFilterBtn>
+        </BtnWrapper>
         <ArticleList>
-          {articles.map((article) => {
+          {renderedArticles.map((article) => {
             return <ArticleCard key={article._id} article={article} />;
           })}
-        </ArticleList>
+        </ArticleList>{' '}
       </Main>
     </>
   );
@@ -94,10 +146,9 @@ export default function Home({ articles }: HomeProps) {
 export async function getServerSideProps() {
   // res.setHeader('Cache-Control', `public, max-age=600`);
   let articles: Article[] = [];
-  function getRandomArticles(data: ArticleData, count: number = 4): Article[] {
+  function getRandomArticles(data: ArticleData): Article[] {
     const { articles } = data;
-    const shuffledArticles = articles.sort(() => 0.5 - Math.random());
-    return shuffledArticles.slice(0, count);
+    return articles.sort(() => 0.5 - Math.random());
   }
 
   try {

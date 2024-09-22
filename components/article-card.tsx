@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 
 const CardWrapper = styled.li`
   display: block;
-  width: 100vwh;
+
   padding-bottom: 20px;
   margin-bottom: 20px;
   gap: 20px;
@@ -169,10 +169,6 @@ export default function ArticleCard({ article }: ArticleCardProps) {
       return newMarkId;
     });
   };
-
-  useEffect(() => {
-    console.log({ likedIds });
-  }, [likedIds]);
 
   const {
     likeCount = 0,

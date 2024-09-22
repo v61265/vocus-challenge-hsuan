@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import SvgLike from '~/public/icons/like.svg';
 import SvgMark from '~/public/icons/mark.svg';
@@ -8,7 +7,7 @@ const Wrapper = styled.div`
   gap: 10px;
 `;
 
-const LikeWrapper = styled.span<{ isActive: boolean }>`
+const LikeWrapper = styled.span`
   display: flex;
   color: var(--Gray2, #665e5c);
   font-size: 12px;
@@ -34,22 +33,19 @@ const LikeWrapper = styled.span<{ isActive: boolean }>`
       transform: scale(1.1);
     }
   }
-
-  ${({ isActive }) => {
-    if (!isActive) return;
-    return `path {
-      animation:like 0.5s 1;
-      fill:red;
-      stroke:none;
+  &.active {
+    path {
+      animation: like 0.5s 1;
+      fill: red;
+      stroke: none;
     }
     color: red;
-    `;
-  }}
+  }
 `;
 
 const CountComponent = styled.span``;
 
-const MarkWrapper = styled.span<{ isActive: boolean }>`
+const MarkWrapper = styled.span`
   &:hover {
     cursor: pointer;
     path {
@@ -58,16 +54,14 @@ const MarkWrapper = styled.span<{ isActive: boolean }>`
     }
   }
 
-  ${({ isActive }) => {
-    if (!isActive) return;
-    return `path {
-      animation:like 0.5s 1;
-      fill:red;
-      stroke:none;
+  &.active {
+    path {
+      animation: like 0.5s 1;
+      fill: red;
+      stroke: none;
     }
     color: red;
-    `;
-  }}
+  }
 `;
 
 type LikeAndMarkProps = {
@@ -89,11 +83,17 @@ export default function LikeAndMark({
 }: LikeAndMarkProps) {
   return (
     <Wrapper>
-      <LikeWrapper isActive={isLiked} onClick={() => clickLikeFn(articleId)}>
+      <LikeWrapper
+        className={isLiked ? 'active' : undefined}
+        onClick={() => clickLikeFn(articleId)}
+      >
         <SvgLike />
         <CountComponent>{isLiked ? likeCount + 1 : likeCount}</CountComponent>
       </LikeWrapper>
-      <MarkWrapper isActive={isMarked} onClick={() => clickMarkFn(articleId)}>
+      <MarkWrapper
+        className={isMarked ? 'active' : undefined}
+        onClick={() => clickMarkFn(articleId)}
+      >
         <SvgMark />
       </MarkWrapper>
     </Wrapper>
