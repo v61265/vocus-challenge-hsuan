@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { Article } from '~/types/article';
 import Image from 'next/image';
 import LikeAndMark from './like-and-mark';
+import { useEffect, useState } from 'react';
 
 const CardWrapper = styled.li`
   display: block;
@@ -120,6 +121,59 @@ type ArticleCardProps = {
 };
 
 export default function ArticleCard({ article }: ArticleCardProps) {
+  const [likedIds, setLikedIds] = useState<string[]>([]);
+  const [markedIds, setMarkedIds] = useState<string[]>([]);
+  const setCookie = (name: string, value: string, maxAgeInDays: number) => {
+    const maxAge = maxAgeInDays * 24 * 60 * 60;
+    document.cookie = `${name}=${value}; max-age=${maxAge}; path=/`;
+  };
+  useEffect(() => {
+    const cookies = document.cookie.split('; ');
+
+    //like
+    const cookie = cookies.find((cookie: string) =>
+      cookie.startsWith('likedIds=')
+    );
+    setLikedIds(cookie ? cookie.split('=')[1].split(',') : []);
+    //mark
+    const markCookie = cookies.find((cookie: string) =>
+      cookie.startsWith('markedIds=')
+    );
+    setMarkedIds(markCookie ? markCookie.split('=')[1].split(',') : []);
+  }, []);
+
+  const handleClickLike = (id: string) => {
+    setLikedIds((prev) => {
+      const newLikeId = [...prev];
+      if (likedIds.includes(id)) {
+        const index = likedIds.indexOf(id);
+        newLikeId.splice(index, 1);
+      } else {
+        newLikeId.push(id);
+      }
+      setCookie('likedIds', newLikeId.join(','), 7);
+      return newLikeId;
+    });
+  };
+
+  const handleClickMark = (id: string) => {
+    setMarkedIds((prev) => {
+      const newMarkId = [...prev];
+      if (newMarkId.includes(id)) {
+        const index = newMarkId.indexOf(id);
+        newMarkId.splice(index, 1);
+      } else {
+        newMarkId.push(id);
+      }
+      setCookie('markedIds', newMarkId.join(','), 7);
+      return newMarkId;
+    });
+  };
+
+  useEffect(() => {
+    console.log({ likedIds });
+  }, [likedIds]);
+
   const {
     likeCount = 0,
     title = '',
@@ -161,7 +215,14 @@ export default function ArticleCard({ article }: ArticleCardProps) {
           </Avatar>
           <AuthorName>{fullname}</AuthorName>
         </Author>
-        <LikeAndMark likeCount={likeCount} articleId={_id} />
+        <LikeAndMark
+          likeCount={likeCount}
+          articleId={_id}
+          isLiked={likedIds.includes(_id)}
+          isMarked={markedIds.includes(_id)}
+          clickLikeFn={handleClickLike}
+          clickMarkFn={handleClickMark}
+        />
       </CardBottom>
     </CardWrapper>
   );

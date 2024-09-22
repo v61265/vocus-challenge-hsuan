@@ -49,67 +49,53 @@ const LikeWrapper = styled.span<{ isActive: boolean }>`
 
 const CountComponent = styled.span``;
 
+const MarkWrapper = styled.span<{ isActive: boolean }>`
+  &:hover {
+    cursor: pointer;
+    path {
+      fill: red;
+      opacity: 0.7;
+    }
+  }
+
+  ${({ isActive }) => {
+    if (!isActive) return;
+    return `path {
+      animation:like 0.5s 1;
+      fill:red;
+      stroke:none;
+    }
+    color: red;
+    `;
+  }}
+`;
+
 type LikeAndMarkProps = {
   likeCount: number;
   articleId: string;
+  isLiked: boolean;
+  isMarked: boolean;
+  clickLikeFn: (id: string) => void;
+  clickMarkFn: (id: string) => void;
 };
 
 export default function LikeAndMark({
   likeCount,
   articleId,
+  isLiked,
+  isMarked,
+  clickLikeFn,
+  clickMarkFn,
 }: LikeAndMarkProps) {
-  const [isLiked, setIsLiked] = useState(false);
-
-  const setCookie = (name: string, value: string, maxAgeInDays: number) => {
-    const maxAge = maxAgeInDays * 24 * 60 * 60;
-    document.cookie = `${name}=${value}; max-age=${maxAge}; path=/`;
-  };
-
-  useEffect(() => {
-    const cookies = document.cookie.split('; ');
-    const cookie = cookies.find((cookie: string) =>
-      cookie.startsWith('likedIds=')
-    );
-
-    const likedIdsValue = cookie ? cookie.split('=')[1].split(',') : [];
-
-    if (likedIdsValue.includes(articleId)) {
-      setIsLiked(true);
-    }
-  }, []);
-
-  const handleClickLike = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    setIsLiked((prev) => {
-      const newLikedState = !prev;
-      const cookies = document.cookie.split('; ');
-      const cookie = cookies.find((cookie: string) =>
-        cookie.startsWith('likedIds=')
-      );
-      const likedIdsValue = cookie ? cookie.split('=')[1].split(',') : [];
-
-      if (newLikedState) {
-        likedIdsValue.push(articleId);
-      } else {
-        const index = likedIdsValue.indexOf(articleId);
-        if (index !== -1) {
-          likedIdsValue.splice(index, 1);
-        }
-      }
-
-      setCookie('likedIds', likedIdsValue.join(','), 7);
-
-      return newLikedState;
-    });
-  };
-
   return (
     <Wrapper>
-      <LikeWrapper isActive={isLiked} onClick={handleClickLike}>
+      <LikeWrapper isActive={isLiked} onClick={() => clickLikeFn(articleId)}>
         <SvgLike />
         <CountComponent>{isLiked ? likeCount + 1 : likeCount}</CountComponent>
       </LikeWrapper>
-      <SvgMark />
+      <MarkWrapper isActive={isMarked} onClick={() => clickMarkFn(articleId)}>
+        <SvgMark />
+      </MarkWrapper>
     </Wrapper>
   );
 }
